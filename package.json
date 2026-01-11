@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@tanstack/svelte-query": "^6.0.14",
-    "@tanstack/svelte-query-devtools": "^6.0.3"
+    "@tanstack/svelte-query-devtools": "^6.0.3",
+    "ky": "^1.14.2"
   }
 }
