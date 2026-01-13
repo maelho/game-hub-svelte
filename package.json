@@ -38,6 +38,7 @@
     "vite": "^7.2.6"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.16",
     "@tanstack/svelte-query": "^6.0.14",
     "@tanstack/svelte-query-devtools": "^6.0.3",
     "ky": "^1.14.2"
