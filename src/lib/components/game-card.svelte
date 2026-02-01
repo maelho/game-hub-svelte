@@ -4,7 +4,6 @@
   import { getCroppedImageUrl } from '$lib/rawg/utils'
   import MetacriticScore from './metacritic-score.svelte'
   import PlatformIconsList from './platform-icons-list.svelte'
-  import AspectRatio from './ui/aspect-ratio/aspect-ratio.svelte'
   import CardContent from './ui/card/card-content.svelte'
   import CardFooter from './ui/card/card-footer.svelte'
 

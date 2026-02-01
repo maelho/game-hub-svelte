@@ -14,6 +14,10 @@
 </svelte:head>
 
 <QueryClientProvider client={getQueryClient()}>
-  {@render children()}
+  <div class="flex min-h-screen flex-col">
+    <main class="flex-1">
+      {@render children()}
+    </main>
+  </div>
   <SvelteQueryDevtools />
 </QueryClientProvider>
