@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Game, GamesListResponse } from '$lib/rawg'
   import GameCard from './game-card.svelte'
-  import { MediaQuery, SvelteSet } from 'svelte/reactivity'
+  import { SvelteSet } from 'svelte/reactivity'
 
   let { data }: { data: GamesListResponse[] } = $props()
   let currentWidth = $state(0)
