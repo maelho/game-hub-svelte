@@ -1,20 +1,25 @@
 <script lang="ts">
   import type { Game, GamesListResponse } from '$lib/rawg'
   import GameCard from './game-card.svelte'
-  import { MediaQuery, SvelteSet } from 'svelte/reactivity'
+  import { SvelteSet } from 'svelte/reactivity'
 
   let { data }: { data: GamesListResponse[] } = $props()
+  let currentWidth = $state(0)
 
-  const isLarge = new MediaQuery('(min-width: 1024px)')
-  const isMedium = new MediaQuery('(min-width: 768px)')
-  const isSmall = new MediaQuery('(min-width: 640px)')
+  const breakpoints = {
+    sm: 640,
+    md: 768,
+    lg: 1024
+  } as const
 
-  let currentColumnsCount: number = $derived.by(() => {
-    if (isLarge.current) return 4
-    if (isMedium.current) return 3
-    if (isSmall.current) return 2
+  function getColumns(width: number): number {
+    if (width >= breakpoints.lg) return 4
+    if (width >= breakpoints.md) return 3
+    if (width >= breakpoints.sm) return 2
     return 1
-  })
+  }
+
+  let currentColumnsCount: number = $derived(getColumns(currentWidth))
 
   let allGames = $derived.by(() => {
     let seen = new SvelteSet<string>()
@@ -41,7 +46,7 @@
   })
 </script>
 
-<div class="flex gap-6">
+<div bind:clientWidth={currentWidth} class="flex gap-6">
   {#each gameGrid as columns, columnsIdx (columnsIdx)}
     <div class="flex flex-1 flex-col gap-6">
       {#each columns as game, rowIdx (rowIdx)}
