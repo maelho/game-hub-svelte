@@ -2,16 +2,22 @@
   import GamesGrid from '$lib/components/games-grid.svelte'
   import { gameQueryOptions } from '$lib/query-options'
   import { createInfiniteQuery } from '@tanstack/svelte-query'
-
   import { Spinner } from '$lib/components/ui/spinner'
-
   import { useIntersectionObserver } from 'runed'
+  import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
+
+  let { filters }: { filters: GameFiltersReturn } = $props()
 
   let target = $state<HTMLElement | null>(null)
-
   let isIntersecting = $state(false)
 
-  const query = createInfiniteQuery(gameQueryOptions)
+  const query = createInfiniteQuery(() =>
+    gameQueryOptions({
+      ordering: filters.ordering,
+      parent_platforms: filters.parent_platforms,
+      search: filters.search
+    })
+  )
 
   useIntersectionObserver(
     () => target,
@@ -30,22 +36,20 @@
   })
 </script>
 
-<div class="container mx-auto px-6 py-6">
-  {#if query.isFetchingNextPage}
-    <h1>loading...</h1>
-  {:else if query.error}
-    <span>Error {query.error.message}</span>
-  {/if}
+{#if query.isFetchingNextPage}
+  <h1>loading...</h1>
+{:else if query.error}
+  <span>Error {query.error.message}</span>
+{/if}
 
-  {#if query.isSuccess}
-    <GamesGrid data={query.data.pages} />
-    <div
-      bind:this={target}
-      class="col-span-full flex min-h-20 w-full items-center justify-center py-4"
-    >
-      {#if query.isFetchingNextPage || (query.hasNextPage && isIntersecting)}
-        <Spinner class="size-10" />
-      {/if}
-    </div>
-  {/if}
-</div>
+{#if query.isSuccess}
+  <GamesGrid data={query.data.pages} />
+  <div
+    bind:this={target}
+    class="col-span-full flex min-h-20 w-full items-center justify-center py-4"
+  >
+    {#if query.isFetchingNextPage || (query.hasNextPage && isIntersecting)}
+      <Spinner class="size-10" />
+    {/if}
+  </div>
+{/if}
