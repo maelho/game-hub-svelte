@@ -3,8 +3,9 @@
   import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
   import { sortBy } from '$lib/rawg'
   import { createQuery } from '@tanstack/svelte-query'
-  import { Field, FieldLabel } from './ui/field'
+  import { Field, FieldLabel } from '$lib/components/ui/field'
   import { platformsQueryOptions } from '$lib/query-options'
+  import { Skeleton } from '$lib/components/ui/skeleton'
 
   interface SelectOptions {
     htmlFor: string
@@ -45,7 +46,17 @@
   })}
 
   {#if platformQuery.isLoading}
-    <span>loading...</span>
+    <div class="min-w-min">
+      <Field>
+        <FieldLabel>Platform</FieldLabel>
+        <div
+          class="flex h-9 w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-input/30 px-3 py-2"
+        >
+          <Skeleton class="h-4 w-24" />
+          <Skeleton class="size-4 rounded-full" />
+        </div>
+      </Field>
+    </div>
   {:else if platformQuery.isSuccess}
     {@render filtersOptions({
       htmlFor: 'sort-platform',
