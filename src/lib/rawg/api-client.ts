@@ -1,4 +1,4 @@
-import ky, { type KyInstance, type Options } from 'ky'
+import { type FetchContext, ofetch } from 'ofetch'
 import type {
   GameDetailResponse,
   GameLits,
@@ -9,92 +9,94 @@ import type {
   TrailersListResponse
 } from './types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.rawg.io/api'
-const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY
-const REQUEST_TIMEOUT = 30000 // 30 seconds
-const MAX_RETRIES = 2
+const CONFIG = {
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://api.rawg.io/api',
+  RAWG_API_KEY: import.meta.env.VITE_RAWG_API_KEY,
+  REQUEST_TIMEOUT: 30000, // 30 seconds
+  MAX_RETRIES: 1,
+  BASE_RETRY_DELAY: 250,
+  MAX_RETRY_JITTER: 250
+} as const
 
-if (!RAWG_API_KEY) {
+if (!CONFIG.RAWG_API_KEY) {
   throw new Error('API key is required but not found in environment variables')
 }
 
-const rawgApi: KyInstance = ky.create({
-  prefixUrl: API_BASE_URL,
-  timeout: REQUEST_TIMEOUT,
-  retry: {
-    limit: MAX_RETRIES,
-    methods: ['get'],
-    statusCodes: [408, 413, 429, 500, 502, 503, 504]
+const rawgApi = ofetch.create({
+  baseURL: CONFIG.API_BASE_URL,
+  timeout: CONFIG.REQUEST_TIMEOUT,
+  retry: CONFIG.MAX_RETRIES,
+  onRequest({ options }: FetchContext) {
+    options.retryDelay ??=
+      CONFIG.BASE_RETRY_DELAY + Math.floor(Math.random() * CONFIG.MAX_RETRY_JITTER)
+
+    const query = (options.query ?? {}) as Record<string, unknown>
+    query.key = CONFIG.RAWG_API_KEY
+    options.query = query
   },
-  hooks: {
-    beforeRequest: [
-      async (request) => {
-        const url = new URL(request.url)
-        url.searchParams.set('key', RAWG_API_KEY)
-        return new Request(url, request)
-      }
-    ],
-    beforeError: [
-      (error) => {
-        const { response } = error
-        console.error(`RAWG API Error: ${response?.status} ${response?.statusText}`)
-        return error
-      }
-    ]
+  onRequestError({ response }: FetchContext) {
+    if (response && import.meta.env.DEV) {
+      console.error(`RAWG API Error: ${response.status} ${response.statusText}`)
+    }
   }
 })
 
-export class RawgApiError extends Error {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(message: string, _status?: number, _statusText?: string, _endpoint?: string) {
-    super(message)
-    this.name = 'RawgApiError'
-  }
+function sanitizeParams(params?: GamesQueryParams) {
+  if (!params) return undefined
+  return Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== null))
 }
 
 async function fetchRawgData<T>(
   endpoint: string,
-  params?: GamesQueryParams | Record<string, unknown>
+  params?: GamesQueryParams,
+  signal?: AbortSignal
 ): Promise<T> {
-  try {
-    const cleanParams = params
-      ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== undefined && v !== null))
-      : undefined
-
-    return await rawgApi
-      .get(endpoint, {
-        searchParams: cleanParams as Options['searchParams']
-      })
-      .json<T>()
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new RawgApiError(error.message, undefined, undefined, endpoint)
-    }
-    throw error
-  }
+  return await rawgApi<T>(endpoint, {
+    query: sanitizeParams(params),
+    signal
+  })
 }
 
-export function getGameLists({ list = 'main', params }: GameLits): Promise<GamesListResponse> {
-  return fetchRawgData(`games/lists/${list}`, params)
+type ParamsRequest<T extends GamesQueryParams> = {
+  params: T
+  signal?: AbortSignal
 }
 
-export function getGames({ params }: { params: GamesQueryParams }): Promise<GamesListResponse> {
-  return fetchRawgData('games', params)
+const endpoints = {
+  games: 'games',
+  gameLists: (list: string) => `games/lists/${list}`,
+  gameDetails: (slug: string) => `games/${slug}`,
+  gameScreenshots: (slug: string) => `games/${slug}/screenshots`,
+  gameTrailers: (slug: string) => `games/${slug}/movies`,
+  platformsParents: 'platforms/lists/parents'
+} as const
+
+function createParamsEndpoint<TResult, TParams extends GamesQueryParams>(endpoint: string) {
+  return ({ params, signal }: ParamsRequest<TParams>): Promise<TResult> =>
+    fetchRawgData(endpoint, params, signal)
 }
 
-export function getGameDetails(slug: string): Promise<GameDetailResponse> {
-  return fetchRawgData(`games/${slug}`)
+function createSignalEndpoint<TResult>(endpoint: string) {
+  return (signal?: AbortSignal): Promise<TResult> => fetchRawgData(endpoint, undefined, signal)
 }
 
-export function getGameScreenshots(slug: string): Promise<ScreenshotsListResponse> {
-  return fetchRawgData(`games/${slug}/screenshots`)
+function createSlugEndpoint<TResult>(endpoint: (slug: string) => string) {
+  return (slug: string, signal?: AbortSignal): Promise<TResult> =>
+    fetchRawgData(endpoint(slug), undefined, signal)
 }
 
-export function getGameTrailers(slug: string): Promise<TrailersListResponse> {
-  return fetchRawgData(`games/${slug}/movies`)
+function createListEndpoint<TResult>(endpoint: (list: string) => string) {
+  return ({ list = 'main', params, signal }: GameLits): Promise<TResult> =>
+    fetchRawgData(endpoint(list), params, signal)
 }
 
-export function getPlatformsParents(): Promise<PlatformsParentsResponse> {
-  return fetchRawgData('platforms/lists/parents')
-}
+export const getGameLists = createListEndpoint<GamesListResponse>(endpoints.gameLists)
+export const getGames = createParamsEndpoint<GamesListResponse, GamesQueryParams>(endpoints.games)
+export const getGameDetails = createSlugEndpoint<GameDetailResponse>(endpoints.gameDetails)
+export const getGameScreenshots = createSlugEndpoint<ScreenshotsListResponse>(
+  endpoints.gameScreenshots
+)
+export const getGameTrailers = createSlugEndpoint<TrailersListResponse>(endpoints.gameTrailers)
+export const getPlatformsParents = createSignalEndpoint<PlatformsParentsResponse>(
+  endpoints.platformsParents
+)
