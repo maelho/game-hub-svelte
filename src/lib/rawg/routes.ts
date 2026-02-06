@@ -10,7 +10,6 @@ import type {
   GamesQueryParams,
   GameDetailResponse,
   ScreenshotsListResponse,
-  TrailersListResponse,
   PlatformsParentsResponse
 } from './types'
 
@@ -29,7 +28,6 @@ export const getGameDetails = createSlugEndpoint<GameDetailResponse>(endpoints.g
 export const getGameScreenshots = createSlugEndpoint<ScreenshotsListResponse>(
   endpoints.gameScreenshots
 )
-export const getGameTrailers = createSlugEndpoint<TrailersListResponse>(endpoints.gameTrailers)
 export const getPlatformsParents = createSignalEndpoint<PlatformsParentsResponse>(
   endpoints.platformsParents
 )

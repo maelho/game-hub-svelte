@@ -1,10 +1,10 @@
 <script lang="ts">
   import GamesGrid from '$lib/components/games-grid.svelte'
-  import { gameQueryOptions } from '$lib/query-options'
   import { createInfiniteQuery } from '@tanstack/svelte-query'
   import { Spinner } from '$lib/components/ui/spinner'
   import { useIntersectionObserver } from 'runed'
   import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
+  import { gameQueryOptions } from '$lib/queries/query-options'
 
   let { filters }: { filters: GameFiltersReturn } = $props()
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '$lib/utils'
+  import { cn } from '$lib/utils/shadcn'
 
   let { score = 0 }: { score: number } = $props()
 

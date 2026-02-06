@@ -4,8 +4,8 @@
   import { sortBy } from '$lib/rawg'
   import { createQuery } from '@tanstack/svelte-query'
   import { Field, FieldLabel } from '$lib/components/ui/field'
-  import { platformsQueryOptions } from '$lib/query-options'
   import { Skeleton } from '$lib/components/ui/skeleton'
+  import { platformsQueryOptions } from '$lib/queries/query-options'
 
   interface SelectOptions {
     htmlFor: string
