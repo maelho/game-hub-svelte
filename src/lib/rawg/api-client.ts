@@ -1,13 +1,5 @@
 import { type FetchContext, ofetch } from 'ofetch'
-import type {
-  GameDetailResponse,
-  GameLits,
-  GamesListResponse,
-  GamesQueryParams,
-  PlatformsParentsResponse,
-  ScreenshotsListResponse,
-  TrailersListResponse
-} from './types'
+import type { GameLits, GamesQueryParams } from './types'
 
 const CONFIG = {
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://api.rawg.io/api',
@@ -62,41 +54,21 @@ type ParamsRequest<T extends GamesQueryParams> = {
   signal?: AbortSignal
 }
 
-const endpoints = {
-  games: 'games',
-  gameLists: (list: string) => `games/lists/${list}`,
-  gameDetails: (slug: string) => `games/${slug}`,
-  gameScreenshots: (slug: string) => `games/${slug}/screenshots`,
-  gameTrailers: (slug: string) => `games/${slug}/movies`,
-  platformsParents: 'platforms/lists/parents'
-} as const
-
-function createParamsEndpoint<TResult, TParams extends GamesQueryParams>(endpoint: string) {
+export function createParamsEndpoint<TResult, TParams extends GamesQueryParams>(endpoint: string) {
   return ({ params, signal }: ParamsRequest<TParams>): Promise<TResult> =>
     fetchRawgData(endpoint, params, signal)
 }
 
-function createSignalEndpoint<TResult>(endpoint: string) {
+export function createSignalEndpoint<TResult>(endpoint: string) {
   return (signal?: AbortSignal): Promise<TResult> => fetchRawgData(endpoint, undefined, signal)
 }
 
-function createSlugEndpoint<TResult>(endpoint: (slug: string) => string) {
+export function createSlugEndpoint<TResult>(endpoint: (slug: string) => string) {
   return (slug: string, signal?: AbortSignal): Promise<TResult> =>
     fetchRawgData(endpoint(slug), undefined, signal)
 }
 
-function createListEndpoint<TResult>(endpoint: (list: string) => string) {
+export function createListEndpoint<TResult>(endpoint: (list: string) => string) {
   return ({ list = 'main', params, signal }: GameLits): Promise<TResult> =>
     fetchRawgData(endpoint(list), params, signal)
 }
-
-export const getGameLists = createListEndpoint<GamesListResponse>(endpoints.gameLists)
-export const getGames = createParamsEndpoint<GamesListResponse, GamesQueryParams>(endpoints.games)
-export const getGameDetails = createSlugEndpoint<GameDetailResponse>(endpoints.gameDetails)
-export const getGameScreenshots = createSlugEndpoint<ScreenshotsListResponse>(
-  endpoints.gameScreenshots
-)
-export const getGameTrailers = createSlugEndpoint<TrailersListResponse>(endpoints.gameTrailers)
-export const getPlatformsParents = createSignalEndpoint<PlatformsParentsResponse>(
-  endpoints.platformsParents
-)
