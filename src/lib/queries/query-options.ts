@@ -4,37 +4,40 @@ import {
   getGameLists,
   getGameScreenshots,
   getGames,
-  getGameTrailers,
   getPlatformsParents
 } from '$lib/rawg'
 import type { GamesQueryParams } from '$lib/rawg/types'
+import { gameQueryKeys } from './query-keys'
 
 const DEFAULT_PAGE_SIZE = 30
-const GAMES_STALE_TIME = 5 * 60 * 1000 // 5 minutes
-const GAME_DETAILS_STALE_TIME = 10 * 60 * 1000 // 10 minutes
-const PLATFORMS_STALE_TIME = 24 * 60 * 60 * 1000 // 24 hours
 
-const gameQueryKeys = {
-  all: ['games'] as const,
-  infinite: (filters?: GamesQueryParams) =>
-    [...gameQueryKeys.all, 'infinite', filters || 'all'] as const,
-  detail: (id: string | number) => [...gameQueryKeys.all, 'detail', id] as const,
-  screenshots: (id: string | number) => [...gameQueryKeys.all, 'screenshots', id] as const,
-  trailers: (id: string | number) => [...gameQueryKeys.all, 'trailers', id] as const,
+const STALE_TIMES = {
+  games: 10 * 60 * 1000, // 10 minutes
+  gameDetails: 30 * 60 * 1000, // 30 minutes
+  platform: 24 * 60 * 60 * 1000, // 24 hours
+  gameMedia: 60 * 60 * 1000 // 1 hour
+}
 
-  platformsParents: () => [...gameQueryKeys.all, 'platforms'] as const
+function withCacheTimes(staleTime: number, gcMultiplier = 1) {
+  return {
+    staleTime,
+    gcTIme: staleTime * gcMultiplier
+  }
 }
 
 const defaultQueryOptions = {
   refetchOnWindowFocus: false,
   refetchOnMount: false,
+  refetchOnReconnect: false,
   retry: 2
 }
 
 export function gameQueryOptions(filters?: GamesQueryParams) {
   return infiniteQueryOptions({
     queryKey: gameQueryKeys.infinite(filters),
-    queryFn: ({ pageParam = 1 }) => {
+    queryFn: ({ pageParam = 1, signal }) => {
+      let search = filters?.search
+
       const commonParams = {
         parent_platforms: filters?.parent_platforms,
         ordering: filters?.ordering,
@@ -42,28 +45,29 @@ export function gameQueryOptions(filters?: GamesQueryParams) {
         page_size: DEFAULT_PAGE_SIZE
       }
 
-      if (filters?.search) {
+      if (search) {
         return getGames({
           params: {
             ...commonParams,
-            search: filters.search
-          }
+            search
+          },
+          signal
         })
       }
+
       return getGameLists({
         params: {
           ...commonParams,
           discover: true
-        }
+        },
+        signal
       })
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) =>
       lastPage.next ? lastPageParam + 1 : undefined,
     ...defaultQueryOptions,
-
-    staleTime: GAMES_STALE_TIME,
-    gcTime: GAMES_STALE_TIME * 2 // 10 minutes
+    ...withCacheTimes(STALE_TIMES.games, 2)
   })
 }
 
@@ -72,9 +76,8 @@ export function gameDetailsQueryOptions(slug: string) {
     queryKey: gameQueryKeys.detail(slug),
     queryFn: () => getGameDetails(slug),
     ...defaultQueryOptions,
-    staleTime: GAME_DETAILS_STALE_TIME,
-    gcTime: GAME_DETAILS_STALE_TIME,
-    enabled: Boolean(slug?.trim())
+    ...withCacheTimes(STALE_TIMES.games, 2),
+    enabled: !!slug
   })
 }
 
@@ -83,16 +86,8 @@ export function gameScreenshotsQueryOptions(slug: string) {
     queryKey: gameQueryKeys.screenshots(slug),
     queryFn: () => getGameScreenshots(slug),
     ...defaultQueryOptions,
-    enabled: Boolean(slug?.trim())
-  })
-}
-
-export function gameTrailersQueryOptions(slug: string) {
-  return queryOptions({
-    queryKey: gameQueryKeys.trailers(slug),
-    queryFn: () => getGameTrailers(slug),
-    ...defaultQueryOptions,
-    enabled: Boolean(slug?.trim())
+    ...withCacheTimes(STALE_TIMES.games, 2),
+    enabled: !!slug
   })
 }
 
@@ -101,7 +96,6 @@ export function platformsQueryOptions() {
     queryKey: gameQueryKeys.platformsParents(),
     queryFn: () => getPlatformsParents(),
     ...defaultQueryOptions,
-    staleTime: PLATFORMS_STALE_TIME,
-    gcTime: PLATFORMS_STALE_TIME
+    ...withCacheTimes(STALE_TIMES.games, 2)
   })
 }
