@@ -4,8 +4,8 @@
   import { sortBy } from '$lib/rawg'
   import { createQuery } from '@tanstack/svelte-query'
   import { Field, FieldLabel } from '$lib/components/ui/field'
-  import { Skeleton } from '$lib/components/ui/skeleton'
   import { platformsQueryOptions } from '$lib/queries/query-options'
+  import { Spinner } from '$lib/components/ui/spinner'
 
   interface SelectOptions {
     htmlFor: string
@@ -50,10 +50,9 @@
       <Field>
         <FieldLabel>Platform</FieldLabel>
         <div
-          class="flex h-9 w-fit items-center justify-between gap-1.5 rounded-md border border-input bg-input/30 px-3 py-2"
+          class="flex rounded-sm h-9 w-fit items-center gap-2 border border-industrial-border bg-industrial-secondary px-3 py-2"
         >
-          <Skeleton class="h-4 w-24" />
-          <Skeleton class="size-4 rounded-full" />
+          <Spinner size="sm" />
         </div>
       </Field>
     </div>
