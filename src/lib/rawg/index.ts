@@ -11,7 +11,7 @@ export const sortBy: SortOptions = [
   { label: 'Average rating', value: '-rating' }
 ]
 
-export * from './api-client.ts'
+export * from './routes.ts'
 
 export type {
   Game,
