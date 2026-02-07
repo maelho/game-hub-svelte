@@ -1,6 +1,6 @@
 <script lang="ts">
-  import GameFilters from '$lib/components/game-filters.svelte'
-  import GamesInfiniteScroll from '$lib/components/games-infinite-scroll.svelte'
+  import { GameFilters } from '$lib/components/filters'
+  import { GamesInfiniteScroll } from '$lib/components/game-list'
   import { useGameFilters } from '$lib/hooks/useGameFilters.svelte'
 
   let filters = useGameFilters()

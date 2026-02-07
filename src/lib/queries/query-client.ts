@@ -63,6 +63,4 @@ if (browser) {
     queryClient: getQueryClient(),
     ...persistOptions
   })
-
-  getQueryClient().prefetchQuery(platformsQueryOptions())
 }

@@ -4,9 +4,9 @@
   let { score = 0 }: { score: number } = $props()
 
   let getScoreColor: string = $derived.by(() => {
-    if (score >= 75) return 'bg-green-600 text-white'
-    if (score >= 50) return 'bg-yellow-500 text-black'
-    return 'bg-red-600 text-white'
+    if (score >= 75) return 'text-industrial-success'
+    if (score >= 50) return 'text-industrial-warning'
+    return 'text-industrial-error'
   })
 </script>
 
@@ -18,3 +18,12 @@
 >
   {score}
 </span>
+
+<div
+  class={cn(
+    'mono-data absolute top-2 right-2 border rounded-sm border-current bg-industrial-primary/90 px-2 py-1 font-medium text-xs backdrop-blur-sm',
+    getScoreColor
+  )}
+>
+  {score}
+</div>

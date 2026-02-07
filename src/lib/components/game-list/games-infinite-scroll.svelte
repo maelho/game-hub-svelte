@@ -1,10 +1,10 @@
 <script lang="ts">
-  import GamesGrid from '$lib/components/games-grid.svelte'
   import { createInfiniteQuery } from '@tanstack/svelte-query'
-  import { Spinner } from '$lib/components/ui/spinner'
   import { useIntersectionObserver } from 'runed'
   import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
   import { gameQueryOptions } from '$lib/queries/query-options'
+  import { LoadingScreen, Spinner } from '$lib/components/ui/spinner'
+  import GamesGrid from './games-grid.svelte'
 
   let { filters }: { filters: GameFiltersReturn } = $props()
 
@@ -36,8 +36,8 @@
   })
 </script>
 
-{#if query.isFetchingNextPage}
-  <h1>loading...</h1>
+{#if query.isLoading}
+  <LoadingScreen message="Loading games..." />
 {:else if query.error}
   <span>Error {query.error.message}</span>
 {/if}
