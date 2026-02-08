@@ -51,6 +51,7 @@
     "@tanstack/query-persist-client-core": "^5.91.19",
     "@tanstack/svelte-query": "^6.0.18",
     "@tanstack/svelte-query-devtools": "^6.0.4",
+    "embla-carousel-svelte": "^8.6.0",
     "ofetch": "^1.5.1",
     "runed": "^0.37.1",
     "shadcn": "^3.8.4",

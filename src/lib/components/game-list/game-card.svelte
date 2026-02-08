@@ -10,11 +10,11 @@
   let platformCodes = $derived(formatPlatforms(game.parent_platforms, 'short', ' · ', 4))
 </script>
 
-<a class="group block" href="/">
+<a class="group block" href="/games/{game.slug}">
   <article
-    class="overflow-hidden rounded-sm border border-industrial-border bg-industrial-secondary transition-all duration-150 hover:border-industrial-accent/50 hover:bg-industrial-tertiary"
+    class="border-industrial-border bg-industrial-secondary hover:border-industrial-accent/50 hover:bg-industrial-tertiary overflow-hidden rounded-sm border transition-all duration-150"
   >
-    <div class="relative aspect-video overflow-hidden bg-industrial-tertiary">
+    <div class="bg-industrial-tertiary relative aspect-video overflow-hidden">
       {#if imgSrc}
         <img
           alt={game.name}
@@ -23,7 +23,7 @@
         />
       {:else}
         <div
-          class="flex h-full w-full items-center justify-center text-industrial-text-tertiary text-xs"
+          class="text-industrial-text-tertiary flex h-full w-full items-center justify-center text-xs"
         >
           NO_IMAGE
         </div>
@@ -35,22 +35,22 @@
 
     <div class="space-y-2 p-3">
       <h3
-        class="line-clamp-2 font-medium text-industrial-text text-sm leading-tight transition-colors duration-150 group-hover:text-industrial-accent"
+        class="text-industrial-text group-hover:text-industrial-accent line-clamp-2 text-sm leading-tight font-medium transition-colors duration-150"
       >
         {game.name}
       </h3>
 
       <div
-        class="flex items-center justify-between gap-2 border-industrial-border-strong border-t border-dotted pt-1"
+        class="border-industrial-border-strong flex items-center justify-between gap-2 border-t border-dotted pt-1"
       >
         {#if platformCodes}
-          <span class="text-[10px] text-industrial-text-tertiary tracking-wide">
+          <span class="text-industrial-text-tertiary text-[10px] tracking-wide">
             {platformCodes}
           </span>
         {/if}
 
         {#if game.rating && game.rating > 0}
-          <span class="mono-data text-[10px] text-industrial-text-secondary">
+          <span class="mono-data text-industrial-text-secondary text-[10px]">
             {game.rating.toFixed(1)}/5
           </span>
         {/if}
