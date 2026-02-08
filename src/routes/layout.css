@@ -3,6 +3,8 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/noto-sans';
 
+@plugin '@tailwindcss/typography';
+
 :root {
   --bg-base: #050505;
   --bg-primary: #0a0a0a;
@@ -155,4 +157,29 @@
   font-feature-settings:
     'liga' 0,
     'calt' 0;
+}
+
+@utility prose-industrial {
+  @apply prose prose-sm prose-invert max-w-none;
+  --tw-prose-body: var(--text-secondary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-lead: var(--text-secondary);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-counters: var(--text-tertiary);
+  --tw-prose-bullets: var(--text-tertiary);
+  --tw-prose-hr: var(--border-default);
+  --tw-prose-quotes: var(--text-tertiary);
+  --tw-prose-quote-borders: color-mix(in srgb, var(--accent) 50%, transparent);
+  --tw-prose-captions: var(--text-tertiary);
+  --tw-prose-th-borders: var(--border-strong);
+  --tw-prose-td-borders: var(--border-default);
+
+  & a {
+    text-underline-offset: 4px;
+    transition: color 150ms;
+    &:hover {
+      color: var(--accent-hover);
+    }
+  }
 }

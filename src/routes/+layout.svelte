@@ -6,6 +6,7 @@
   import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'
   import { getQueryClient } from '$lib/queries/query-client'
   import Navbar from '$lib/components/navbar.svelte'
+  import Footer from '$lib/components/footer.svelte'
 
   const { children } = $props()
 </script>
@@ -20,6 +21,7 @@
     <main class="flex-1">
       {@render children()}
     </main>
+    <Footer />
   </div>
   <SvelteQueryDevtools />
 </QueryClientProvider>
