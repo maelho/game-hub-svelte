@@ -5,6 +5,7 @@
   import { QueryClientProvider } from '@tanstack/svelte-query'
   import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'
   import { getQueryClient } from '$lib/queries/query-client'
+  import Navbar from '$lib/components/navbar.svelte'
 
   const { children } = $props()
 </script>
@@ -15,6 +16,7 @@
 
 <QueryClientProvider client={getQueryClient()}>
   <div class="flex min-h-screen flex-col">
+    <Navbar />
     <main class="flex-1">
       {@render children()}
     </main>
