@@ -13,6 +13,7 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
+  <title>GemeHub</title>
 </svelte:head>
 
 <QueryClientProvider client={getQueryClient()}>
