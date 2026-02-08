@@ -1,20 +1,62 @@
 <script lang="ts">
-  import type { Game } from '$lib/rawg'
+  import { useQueryClient } from '@tanstack/svelte-query'
+  import { gameDetailsQueryOptions, gameScreenshotsQueryOptions } from '$lib/queries/query-options'
   import { getCroppedImageUrl } from '$lib/rawg/utils'
   import { formatPlatforms } from '$lib/utils/platform'
-  import MetacriticScore from '$lib/components/metacritic-score.svelte'
+  import type { Game } from '$lib/rawg'
+  import MetacriticScore from '../metacritic-score.svelte'
 
-  let { game }: { game: Game } = $props()
+  interface Props {
+    game: Game
+    priority?: boolean
+  }
+
+  let { game }: Props = $props()
+
   const imgSrc = $derived(getCroppedImageUrl(game.background_image))
+  const platformCodes = $derived(formatPlatforms(game.parent_platforms, 'short', ' · ', 4))
 
-  let platformCodes = $derived(formatPlatforms(game.parent_platforms, 'short', ' · ', 4))
+  const queryClient = useQueryClient()
+
+  let hasPrefetched = $state(false)
+  let prefetchTimeout = $state<number | null>(null)
+
+  const PREFETCH_DELAY = 150
+
+  function handlePrefetch() {
+    if (hasPrefetched || prefetchTimeout !== null) return
+
+    prefetchTimeout = window.setTimeout(() => {
+      prefetchTimeout = null
+      if (hasPrefetched) return
+
+      hasPrefetched = true
+      queryClient.prefetchQuery(gameDetailsQueryOptions(game.slug))
+      queryClient.prefetchQuery(gameScreenshotsQueryOptions(game.slug))
+    }, PREFETCH_DELAY)
+  }
+
+  function handleCancelPrefetch() {
+    if (prefetchTimeout === null) return
+    window.clearTimeout(prefetchTimeout)
+    prefetchTimeout = null
+  }
 </script>
 
-<a class="group block" href="/games/{game.slug}">
+<a
+  class="group block"
+  onblur={handleCancelPrefetch}
+  onfocus={handlePrefetch}
+  onmouseenter={handlePrefetch}
+  onmouseleave={handleCancelPrefetch}
+  ontouchstart={handlePrefetch}
+  data-sveltekit-preload-data="off"
+  href="/games/{game.slug}"
+>
   <article
-    class="border-industrial-border bg-industrial-secondary hover:border-industrial-accent/50 hover:bg-industrial-tertiary overflow-hidden rounded-sm border transition-all duration-150"
+    class="overflow-hidden rounded-sm border border-industrial-border bg-industrial-secondary transition-all duration-150 hover:border-industrial-accent/50 hover:bg-industrial-tertiary"
   >
-    <div class="bg-industrial-tertiary relative aspect-video overflow-hidden">
+    <div class="relative aspect-video overflow-hidden bg-industrial-tertiary">
       {#if imgSrc}
         <img
           alt={game.name}
@@ -23,7 +65,7 @@
         />
       {:else}
         <div
-          class="text-industrial-text-tertiary flex h-full w-full items-center justify-center text-xs"
+          class="flex h-full w-full items-center justify-center text-industrial-text-tertiary text-xs"
         >
           NO_IMAGE
         </div>
@@ -35,24 +77,24 @@
 
     <div class="space-y-2 p-3">
       <h3
-        class="text-industrial-text group-hover:text-industrial-accent line-clamp-2 text-sm leading-tight font-medium transition-colors duration-150"
+        class="line-clamp-2 font-medium text-industrial-text text-sm leading-tight transition-colors duration-150 group-hover:text-industrial-accent"
       >
         {game.name}
       </h3>
 
       <div
-        class="border-industrial-border-strong flex items-center justify-between gap-2 border-t border-dotted pt-1"
+        class="flex items-center justify-between gap-2 border-industrial-border-strong border-t border-dotted pt-1"
       >
         {#if platformCodes}
-          <span class="text-industrial-text-tertiary text-[10px] tracking-wide">
-            {platformCodes}
-          </span>
+          <span class="text-[10px] text-industrial-text-tertiary tracking-wide"
+            >{platformCodes}</span
+          >
         {/if}
 
         {#if game.rating && game.rating > 0}
-          <span class="mono-data text-industrial-text-secondary text-[10px]">
-            {game.rating.toFixed(1)}/5
-          </span>
+          <span class="mono-data text-[10px] text-industrial-text-secondary"
+            >{game.rating.toFixed(1)}/5</span
+          >
         {/if}
       </div>
     </div>
