@@ -35,7 +35,9 @@ const rawgApi = ofetch.create({
 
 function sanitizeParams(params?: GamesQueryParams) {
   if (!params) return undefined
-  return Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== null))
+  return Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v !== null && v !== undefined && v !== '')
+  )
 }
 
 async function fetchRawgData<T>(
