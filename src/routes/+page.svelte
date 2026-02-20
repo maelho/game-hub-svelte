@@ -17,7 +17,7 @@
         </h1>
         <a href="/">
           <button
-            class="flex rounded-sm items-center gap-1 border border-industrial-border px-2 py-1 text-industrial-text-secondary text-xs transition-all duration-150 hover:border-industrial-accent hover:text-industrial-accent"
+            class="border-industrial-border text-industrial-text-secondary hover:border-industrial-accent hover:text-industrial-accent flex items-center gap-1 rounded-sm border px-2 py-1 text-xs transition-all duration-150"
             type="button"
           >
             <X class="size-3" />
