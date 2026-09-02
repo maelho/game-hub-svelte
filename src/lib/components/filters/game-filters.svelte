@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as Select from '$lib/components/ui/select'
-  import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
-  import { sortBy } from '$lib/rawg'
+  import * as Select from '#lib/components/ui/select/index.js'
+  import type { GameFiltersReturn } from '#lib/hooks/useGameFilters.svelte.js'
+  import { sortBy } from '#lib/rawg/index.js'
   import { createQuery } from '@tanstack/svelte-query'
-  import { Field, FieldLabel } from '$lib/components/ui/field'
-  import { platformsQueryOptions } from '$lib/queries/query-options'
-  import { Spinner } from '$lib/components/ui/spinner'
+  import { Field, FieldLabel } from '#lib/components/ui/field/index.js'
+  import { platformsQueryOptions } from '#lib/queries/query-options.js'
+  import { Spinner } from '#lib/components/ui/spinner/index.js'
 
   interface SelectOptions {
     htmlFor: string

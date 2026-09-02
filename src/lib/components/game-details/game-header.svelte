@@ -1,7 +1,7 @@
 <script lang="ts">
   import ArrowLeft from '@lucide/svelte/icons/arrow-left'
-  import MetacriticScore from '$lib/components/metacritic-score.svelte'
-  import type { Game } from '$lib/rawg/types'
+  import MetacriticScore from '#lib/components/metacritic-score.svelte'
+  import type { Game } from '#lib/rawg/types.js'
 
   let { game }: { game: Game } = $props()
 </script>

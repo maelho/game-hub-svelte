@@ -1,4 +1,4 @@
-import type { ParentPlatform, PlataformNames } from '$lib/rawg'
+import type { ParentPlatform, PlataformNames } from '#lib/rawg/index.js'
 
 const platforms: Record<PlataformNames, { full: string; short: string }> = {
   pc: { full: 'PC', short: 'PC' },

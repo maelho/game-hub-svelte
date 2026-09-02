@@ -1,9 +1,12 @@
 <script lang="ts">
   import { useQueryClient } from '@tanstack/svelte-query'
-  import { gameDetailsQueryOptions, gameScreenshotsQueryOptions } from '$lib/queries/query-options'
-  import { getCroppedImageUrl } from '$lib/rawg/utils'
-  import { formatPlatforms } from '$lib/utils/platform'
-  import type { Game } from '$lib/rawg'
+  import {
+    gameDetailsQueryOptions,
+    gameScreenshotsQueryOptions
+  } from '#lib/queries/query-options.js'
+  import { getCroppedImageUrl } from '#lib/rawg/utils.js'
+  import { formatPlatforms } from '#lib/utils/platform.js'
+  import type { Game } from '#lib/rawg/index.js'
   import MetacriticScore from '../metacritic-score.svelte'
 
   interface Props {
@@ -50,7 +53,7 @@
   onmouseenter={handlePrefetch}
   onmouseleave={handleCancelPrefetch}
   ontouchstart={handlePrefetch}
-  data-sveltekit-preload-data="off"
+  data-sveltekit-preload-data="false"
   href="/games/{game.slug}"
 >
   <article

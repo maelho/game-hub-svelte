@@ -1,4 +1,4 @@
-import { browser } from '$app/environment'
+import { browser } from '$app/env'
 import { type Query, QueryClient } from '@tanstack/svelte-query'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import {

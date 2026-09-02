@@ -5,8 +5,8 @@ import {
   getGameScreenshots,
   getGames,
   getPlatformsParents
-} from '$lib/rawg'
-import type { GamesQueryParams } from '$lib/rawg/types'
+} from '#lib/rawg/index.js'
+import type { GamesQueryParams } from '#lib/rawg/types.js'
 import { gameQueryKeys } from './query-keys'
 
 const DEFAULT_PAGE_SIZE = 30

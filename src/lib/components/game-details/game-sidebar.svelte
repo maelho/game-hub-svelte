@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Game } from '$lib/rawg/types'
+  import type { Game } from '#lib/rawg/types.js'
   import GameSpecifications from './game-specifications.svelte'
   import GameRatings from './game-ratings.svelte'
   import GameExternalLinks from './game-external-links.svelte'

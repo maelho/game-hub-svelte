@@ -2,10 +2,10 @@
   import emblaCarouselSvelte from 'embla-carousel-svelte'
   import { createQuery } from '@tanstack/svelte-query'
   import { IsInViewport } from 'runed'
-  import { Spinner } from '$lib/components/ui/spinner'
-  import { gameScreenshotsQueryOptions } from '$lib/queries/query-options'
-  import { cn } from '$lib/utils/shadcn'
-  import type { ScreenshotsListResponse } from '$lib/rawg/types'
+  import { Spinner } from '#lib/components/ui/spinner/index.js'
+  import { gameScreenshotsQueryOptions } from '#lib/queries/query-options.js'
+  import { cn } from '#lib/utils/shadcn.js'
+  import type { ScreenshotsListResponse } from '#lib/rawg/types.js'
 
   type EmblaApi = any
 

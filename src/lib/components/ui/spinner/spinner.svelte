@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '$lib/utils/shadcn'
+  import { cn } from '#lib/utils/shadcn.js'
   import type { HTMLAttributes } from 'svelte/elements'
 
   type Size = 'sm' | 'md' | 'lg'
