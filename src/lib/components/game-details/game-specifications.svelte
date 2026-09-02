@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { formatPlatforms } from '$lib/utils/platform'
-  import type { Game } from '$lib/rawg/types'
+  import { formatPlatforms } from '#lib/utils/platform.js'
+  import type { Game } from '#lib/rawg/types.js'
   import SpecRow from './spec-row.svelte'
 
   let { game }: { game: Game } = $props()

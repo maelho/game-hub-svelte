@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createInfiniteQuery } from '@tanstack/svelte-query'
   import { useIntersectionObserver } from 'runed'
-  import type { GameFiltersReturn } from '$lib/hooks/useGameFilters.svelte'
-  import { gameQueryOptions } from '$lib/queries/query-options'
-  import { LoadingScreen, Spinner } from '$lib/components/ui/spinner'
+  import type { GameFiltersReturn } from '#lib/hooks/useGameFilters.svelte.js'
+  import { gameQueryOptions } from '#lib/queries/query-options.js'
+  import { LoadingScreen, Spinner } from '#lib/components/ui/spinner/index.js'
   import GamesGrid from './games-grid.svelte'
 
   let { filters }: { filters: GameFiltersReturn } = $props()

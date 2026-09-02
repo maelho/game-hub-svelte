@@ -1,6 +1,6 @@
 <script lang="ts">
   import ExternalLink from '@lucide/svelte/icons/external-link'
-  import type { Game } from '$lib/rawg/types'
+  import type { Game } from '#lib/rawg/types.js'
 
   let { game }: { game: Game } = $props()
 </script>

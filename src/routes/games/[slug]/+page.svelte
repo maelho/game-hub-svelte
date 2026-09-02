@@ -1,9 +1,14 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { createQuery } from '@tanstack/svelte-query'
-  import { GameAbout, GameHeader, GameScreenshots, GameSidebar } from '$lib/components/game-details'
-  import { Spinner } from '$lib/components/ui/spinner'
-  import { gameDetailsQueryOptions } from '$lib/queries/query-options'
+  import {
+    GameAbout,
+    GameHeader,
+    GameScreenshots,
+    GameSidebar
+  } from '#lib/components/game-details/index.js'
+  import { Spinner } from '#lib/components/ui/spinner/index.js'
+  import { gameDetailsQueryOptions } from '#lib/queries/query-options.js'
 
   const slug = $derived(page.params.slug)
 

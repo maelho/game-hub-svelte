@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Game, GamesListResponse } from '$lib/rawg'
+  import type { Game, GamesListResponse } from '#lib/rawg/index.js'
   import GameCard from './game-card.svelte'
   import { SvelteSet } from 'svelte/reactivity'
 

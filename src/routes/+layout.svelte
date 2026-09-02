@@ -1,12 +1,12 @@
 <script lang="ts">
   import './layout.css'
-  import favicon from '$lib/assets/favicon.svg'
+  import favicon from '#lib/assets/favicon.svg'
 
   import { QueryClientProvider } from '@tanstack/svelte-query'
   import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'
-  import { getQueryClient } from '$lib/queries/query-client'
-  import Navbar from '$lib/components/navbar.svelte'
-  import Footer from '$lib/components/footer.svelte'
+  import { getQueryClient } from '#lib/queries/query-client.js'
+  import Navbar from '#lib/components/navbar.svelte'
+  import Footer from '#lib/components/footer.svelte'
 
   const { children } = $props()
 </script>

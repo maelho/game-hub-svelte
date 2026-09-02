@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { GameFilters } from '$lib/components/filters'
+  import { GameFilters } from '#lib/components/filters/index.js'
   import { X } from '@lucide/svelte'
-  import { GamesInfiniteScroll } from '$lib/components/game-list'
-  import { useGameFilters } from '$lib/hooks/useGameFilters.svelte'
+  import { GamesInfiniteScroll } from '#lib/components/game-list/index.js'
+  import { useGameFilters } from '#lib/hooks/useGameFilters.svelte.js'
 
   let filters = useGameFilters()
 </script>

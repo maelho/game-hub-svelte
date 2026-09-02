@@ -1,4 +1,4 @@
-import type { GamesQueryParams } from '$lib/rawg'
+import type { GamesQueryParams } from '#lib/rawg/index.js'
 
 export const gameQueryKeys = {
   all: ['games'],
